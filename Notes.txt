@@ -1,0 +1,4 @@
+To do:
+-remove collsisons, collisions between soliders is just an irritation to the player (and very hard to program for!)
+- but, soldiers shouldn't want to to cluster on one spot! (when you group move, make sure each solider has its own spot)
+	-just like when you moved a group but gave each on a spot in a circle!

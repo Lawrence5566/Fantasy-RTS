@@ -1,0 +1,28 @@
+//////////this was code to move units out of buildings, but its not working atm, they just fall for miles thouggh the floor:
+			/*int i = 0;
+			int unitsInPosition = 0;
+			foreach (BUnit unit in units){
+				//move to unitFlagStart
+				unit.GetComponent<CharacterController>().SimpleMove(unitFlagStart);
+				//unit.Move (unitFlagStart);
+				//unitPositions[i] = unitFlagStart; //make sure battalion knows where each unit is moving to
+				spawnWait();//wait 0.5 seconds, send the next unit (so they walk in a line)
+
+				if (Vector3.Distance(unit.transform.position, unitFlagStart) <= 1){ //if unit is at start
+					unit.Move(unitFlagStart + unitPositions[i]); //move to position in formation
+					//allow to be selectable again and detect collsions
+					unit.GetComponent<CharacterController>().detectCollisions = true;
+					unit.GetComponent<SelectableObject> ().enabled = true;
+				}
+
+				if (Vector3.Distance (unit.transform.position, unitPositions[i]) <= 1) { //if unit is in position
+					unitsInPosition++;
+				}
+			}
+
+			if (unitsInPosition == units.Count) {
+				//all units in position, stop spawning and move to flag waypoint
+				moveBattalion(unitFlagEnd);
+				Debug.Log ("move to end");
+				spawning = false;
+			}*/

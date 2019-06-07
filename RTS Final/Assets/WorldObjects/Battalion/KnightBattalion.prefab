@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1592391086486924}
+  m_IsPrefabAsset: 1
+--- !u!1 &1592391086486924
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4457519057873494}
+  - component: {fileID: 114253883622206556}
+  - component: {fileID: 114110211487628582}
+  - component: {fileID: 114780074842908560}
+  m_Layer: 0
+  m_Name: KnightBattalion
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4457519057873494
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1592391086486924}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114110211487628582
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1592391086486924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0841f078db864be42a68e561d9b34142, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battalionStats: {fileID: 114253883622206556}
+  UnitPrefab: {fileID: 1466496436676266, guid: 9515b80cbac54314aae1d4d91983069c, type: 2}
+  startingUnitSize: 10
+  units: []
+  unitStats: []
+--- !u!114 &114253883622206556
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1592391086486924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1448368a670a3f14db6f4326766983be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectName: Knight Battalion
+  buildImage: {fileID: 21300000, guid: 6ed97a43a815bc44f8c06da0c7e72932, type: 3}
+  shortcut: Ctrl-K
+  cost: 100
+  commandCost: 10
+  sellValue: 50
+  hitPoints: 0
+  maxHitPoints: 0
+  healthSlider: {fileID: 0}
+  desc: A battalion of 10 knights
+  spawnTime: 2
+  dead: 0
+  owningCommander: {fileID: 0}
+--- !u!114 &114780074842908560
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1592391086486924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 240
+    i1: 244
+    i2: 85
+    i3: 205
+    i4: 228
+    i5: 158
+    i6: 226
+    i7: 36
+    i8: 200
+    i9: 33
+    i10: 162
+    i11: 86
+    i12: 90
+    i13: 189
+    i14: 133
+    i15: 239
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
