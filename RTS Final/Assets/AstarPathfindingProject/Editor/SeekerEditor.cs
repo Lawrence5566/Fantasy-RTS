@@ -54,7 +54,7 @@ namespace Pathfinding {
 				}
 			}
 
-			Mask("graphMask", graphLabels, "Traversable Graphs");
+			Mask("graphMask.value", graphLabels, "Traversable Graphs");
 
 			tagPenaltiesOpen = EditorGUILayout.Foldout(tagPenaltiesOpen, new GUIContent("Tags", "Settings for each tag"));
 			if (tagPenaltiesOpen) {
@@ -82,6 +82,7 @@ namespace Pathfinding {
 				}
 				EditorGUILayout.EndVertical();
 
+#if !ASTAR_NoTagPenalty
 				EditorGUILayout.BeginVertical();
 				EditorGUILayout.LabelField("Penalty", EditorStyles.boldLabel, GUILayout.MaxWidth(100));
 				var prop = FindProperty("tagPenalties").FindPropertyRelative("Array");
@@ -100,6 +101,7 @@ namespace Pathfinding {
 					}
 				}
 				EditorGUILayout.EndVertical();
+#endif
 
 				EditorGUILayout.BeginVertical();
 				EditorGUILayout.LabelField("Traversable", EditorStyles.boldLabel, GUILayout.MaxWidth(100));

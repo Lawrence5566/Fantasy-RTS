@@ -3,11 +3,12 @@ using System.Collections.Generic;
 namespace Pathfinding {
 	using Pathfinding.Util;
 
-	/** Represents a collection of GraphNodes.
-	 * It allows for fast lookups of the closest node to a point.
-	 *
-	 * \see https://en.wikipedia.org/wiki/K-d_tree
-	 */
+	/// <summary>
+	/// Represents a collection of GraphNodes.
+	/// It allows for fast lookups of the closest node to a point.
+	///
+	/// See: https://en.wikipedia.org/wiki/K-d_tree
+	/// </summary>
 	public class PointKDTree {
 		// TODO: Make constant
 		public const int LeafSize = 10;
@@ -22,13 +23,13 @@ namespace Pathfinding {
 		static readonly IComparer<GraphNode>[] comparers = new IComparer<GraphNode>[] { new CompareX(), new CompareY(), new CompareZ() };
 
 		struct Node {
-			/** Nodes in this leaf node (null if not a leaf node) */
+			/// <summary>Nodes in this leaf node (null if not a leaf node)</summary>
 			public GraphNode[] data;
-			/** Split point along the #splitAxis if not a leaf node */
+			/// <summary>Split point along the <see cref="splitAxis"/> if not a leaf node</summary>
 			public int split;
-			/** Number of non-null entries in #data */
+			/// <summary>Number of non-null entries in <see cref="data"/></summary>
 			public ushort count;
-			/** Axis to split along if not a leaf node (x=0, y=1, z=2) */
+			/// <summary>Axis to split along if not a leaf node (x=0, y=1, z=2)</summary>
 			public byte splitAxis;
 		}
 
@@ -49,13 +50,13 @@ namespace Pathfinding {
 			tree[1] = new Node { data = GetOrCreateList() };
 		}
 
-		/** Add the node to the tree */
+		/// <summary>Add the node to the tree</summary>
 		public void Add (GraphNode node) {
 			numNodes++;
 			Add(node, 1);
 		}
 
-		/** Rebuild the tree starting with all nodes in the array between index start (inclusive) and end (exclusive) */
+		/// <summary>Rebuild the tree starting with all nodes in the array between index start (inclusive) and end (exclusive)</summary>
 		public void Rebuild (GraphNode[] nodes, int start, int end) {
 			if (start < 0 || end < start || end > nodes.Length)
 				throw new System.ArgumentException();
@@ -173,7 +174,7 @@ namespace Pathfinding {
 			}
 		}
 
-		/** Closest node to the point which satisfies the constraint */
+		/// <summary>Closest node to the point which satisfies the constraint</summary>
 		public GraphNode GetNearest (Int3 point, NNConstraint constraint) {
 			GraphNode best = null;
 			long bestSqrDist = long.MaxValue;
@@ -206,12 +207,77 @@ namespace Pathfinding {
 			}
 		}
 
-		/** Add all nodes within a squared distance of the point to the buffer.
-		 * \param point Nodes around this point will be added to the \a buffer.
-		 * \param sqrRadius squared maximum distance in Int3 space. If you are converting from world space you will need to multiply by Int3.Precision:
-		 * \code var sqrRadius = (worldSpaceRadius * Int3.Precision) * (worldSpaceRadius * Int3.Precision); \endcode
-		 * \param buffer All nodes will be added to this list.
-		 */
+		/// <summary>Closest node to the point which satisfies the constraint</summary>
+		public GraphNode GetNearestConnection (Int3 point, NNConstraint constraint, long maximumSqrConnectionLength) {
+			GraphNode best = null;
+			long bestSqrDist = long.MaxValue;
+
+			// Given a found point at a distance of r world units
+			// then any node that has a connection on which a closer point lies must have a squared distance lower than
+			// d^2 < (maximumConnectionLength/2)^2 + r^2
+			// Note: (x/2)^2 = (x^2)/4
+			// Note: (x+3)/4 to round up
+			long offset = (maximumSqrConnectionLength+3)/4;
+
+			GetNearestConnectionInternal(1, point, constraint, ref best, ref bestSqrDist, offset);
+			return best;
+		}
+
+		void GetNearestConnectionInternal (int index, Int3 point, NNConstraint constraint, ref GraphNode best, ref long bestSqrDist, long distanceThresholdOffset) {
+			var data = tree[index].data;
+
+			if (data != null) {
+				var pointv3 = (UnityEngine.Vector3)point;
+				for (int i = tree[index].count - 1; i >= 0; i--) {
+					var dist = (data[i].position - point).sqrMagnitudeLong;
+					// Note: the subtraction is important. If we used an addition on the RHS instead the result might overflow as bestSqrDist starts as long.MaxValue
+					if (dist - distanceThresholdOffset < bestSqrDist && (constraint == null || constraint.Suitable(data[i]))) {
+						// This node may contains the closest connection
+						// Check all connections
+						var conns = (data[i] as PointNode).connections;
+						if (conns != null) {
+							var nodePos = (UnityEngine.Vector3)data[i].position;
+							for (int j = 0; j < conns.Length; j++) {
+								// Find the closest point on the connection, but only on this node's side of the connection
+								// This ensures that we will find the closest node with the closest connection.
+								var connectionMidpoint = ((UnityEngine.Vector3)conns[j].node.position + nodePos) * 0.5f;
+								float sqrConnectionDistance = VectorMath.SqrDistancePointSegment(nodePos, connectionMidpoint, pointv3);
+								// Convert to Int3 space
+								long sqrConnectionDistanceInt = (long)(sqrConnectionDistance*Int3.FloatPrecision*Int3.FloatPrecision);
+								if (sqrConnectionDistanceInt < bestSqrDist) {
+									bestSqrDist = sqrConnectionDistanceInt;
+									best = data[i];
+								}
+							}
+						}
+
+						// Also check if the node itself is close enough.
+						// This is important if the node has no connections at all.
+						if (dist < bestSqrDist) {
+							bestSqrDist = dist;
+							best = data[i];
+						}
+					}
+				}
+			} else {
+				var dist = (long)(point[tree[index].splitAxis] - tree[index].split);
+				var childIndex = 2 * index + (dist < 0 ? 0 : 1);
+				GetNearestConnectionInternal(childIndex, point, constraint, ref best, ref bestSqrDist, distanceThresholdOffset);
+
+				// Try the other one if it is possible to find a valid node on the other side
+				// Note: the subtraction is important. If we used an addition on the RHS instead the result might overflow as bestSqrDist starts as long.MaxValue
+				if (dist*dist - distanceThresholdOffset < bestSqrDist) {
+					// childIndex ^ 1 will flip the last bit, so if childIndex is odd, then childIndex ^ 1 will be even
+					GetNearestConnectionInternal(childIndex ^ 0x1, point, constraint, ref best, ref bestSqrDist, distanceThresholdOffset);
+				}
+			}
+		}
+
+		/// <summary>Add all nodes within a squared distance of the point to the buffer.</summary>
+		/// <param name="point">Nodes around this point will be added to the buffer.</param>
+		/// <param name="sqrRadius">squared maximum distance in Int3 space. If you are converting from world space you will need to multiply by Int3.Precision:
+		/// <code> var sqrRadius = (worldSpaceRadius * Int3.Precision) * (worldSpaceRadius * Int3.Precision); </code></param>
+		/// <param name="buffer">All nodes will be added to this list.</param>
 		public void GetInRange (Int3 point, long sqrRadius, List<GraphNode> buffer) {
 			GetInRangeInternal(1, point, sqrRadius, buffer);
 		}

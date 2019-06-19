@@ -1,0 +1,6 @@
+To do:
+-remove collsisons, collisions between soliders is just an irritation to the player (and very hard to program for!)
+-but, soldiers should stil bwe in formation like BFME (when you group move, make sure each solider has its own spot)
+	-just like when you moved a group but gave each on a spot in a circle!
+-need to be able to move camera by hiting sides of screen
+-camera should be able to keep moving even when opening build menu
