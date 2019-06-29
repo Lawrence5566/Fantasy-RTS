@@ -1,6 +1,21 @@
-To do:
--remove collsisons, collisions between soliders is just an irritation to the player (and very hard to program for!)
--but, soldiers should stil bwe in formation like BFME (when you group move, make sure each solider has its own spot)
-	-just like when you moved a group but gave each on a spot in a circle!
--need to be able to move camera by hiting sides of screen
--camera should be able to keep moving even when opening build menu
+To do list for when unity finsihes their new multiplayer: (basically a full rework)
+- get units moving (some sort of bug is stopping them atm)
+- create very simple lobby for players with new model in 1 map (flat land)
+- get players spawning on the map
+- players need to be able to independantly move camera by hiting sides of screen and with arrow keys
+- get seperate ui/build menu working for palyers
+- camera should be able to keep moving even when opening build menu (no waits etc)
+- get buildings spawning
+- get battalions spawning from buildings
+- get battalions moving
+- get battalions avoiding buildings
+- get battalions avoiding each other
+- get battalions fighting buildings
+- get battalions fighting other battalions
+- get farm generating income for player
+
+Notes:
++ Unity's multiplayer is being depreciated. Therefore a new model will be implemented in this app that will be easily transitionable to the new system when it releases.
++ This project will try to implement a simpler client server model, just to get the multiplayer working
++ remove collisions between soliders it's just an irritation to the player (and very hard to program for!)
+ 	-but soliders shouldn't be able to stick on the same spot as another soldier (if touching, pick area 1m away and move to that)

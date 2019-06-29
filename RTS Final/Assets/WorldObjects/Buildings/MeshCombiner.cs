@@ -15,7 +15,6 @@ public class MeshCombiner : MonoBehaviour {
 		transform.rotation = Quaternion.identity;
 		transform.position = Vector3.zero;
 
-
 		// All our children (and us)
 		MeshFilter[] filters = GetComponentsInChildren<MeshFilter> (false); //(false means don't include inactive objects)
 
